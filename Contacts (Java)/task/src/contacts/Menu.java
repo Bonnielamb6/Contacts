@@ -28,7 +28,7 @@ public class Menu {
                     System.out.println(directory.countContacts());
                     break;
                 case "list":
-                    System.out.println(directory.listContacts());
+                    System.out.print(directory.listContacts());
                     break;
                 case "exit":
                     break;

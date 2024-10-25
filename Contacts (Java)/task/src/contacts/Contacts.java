@@ -4,6 +4,8 @@ public class Contacts {
     private String name;
     private String surname;
     private String number;
+    private final static String REGEX_NUMBER = "^\\+?([\\da-zA-Z]{1,}[\\s-]?)?(\\([\\da-zA-Z]{2,}" +
+            "(\\)[\\s-]|\\)$))?([\\da-zA-Z]{2,}[\\s-]?)*([\\da-zA-Z]{2,})?$";
 
     public Contacts() {
 
@@ -39,6 +41,12 @@ public class Contacts {
     }
 
     public void setNumber(String number) {
-        this.number = number;
+        if(number.matches(REGEX_NUMBER)){
+            this.number = number;
+        }else{
+            System.out.println("Wrong number format!");
+            this.number ="";
+        }
+
     }
 }
