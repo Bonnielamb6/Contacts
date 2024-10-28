@@ -12,23 +12,23 @@ public class Menu {
     public void showMenu() {
         String option;
         do {
-            System.out.print("Enter action (add, remove, edit, count, list, exit): ");
+            System.out.print("Enter action (add, remove, edit, count, info, exit): ");
             option = scanner.getUserInput();
             switch (option) {
                 case "add":
-                    System.out.println(directory.addContact());
+                    System.out.println(directory.addContact()+"\n");
                     break;
                 case "remove":
-                    System.out.println(directory.removeContact());
+                    System.out.println(directory.removeContact()+"\n");
                     break;
                 case "edit":
-                    System.out.println(directory.editContact());
+                    System.out.println(directory.edit()+"\n");
                     break;
                 case "count":
-                    System.out.println(directory.countContacts());
+                    System.out.println(directory.countContacts()+"\n");
                     break;
-                case "list":
-                    System.out.print(directory.listContacts());
+                case "info":
+                    System.out.println(directory.contactsInfo()+"\n");
                     break;
                 case "exit":
                     break;
