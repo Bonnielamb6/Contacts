@@ -1,10 +1,11 @@
 package contacts;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class Person extends Contacts {
+public class Person extends Contacts implements Serializable {
     private String surname;
     private String gender;
     private String birthDate;
@@ -52,9 +53,7 @@ public class Person extends Contacts {
         return switch (firstGenderLetter) {
             case 'M', 'F' -> true;
             default -> false;
-
         };
-
     }
 
     public String getBirthDate() {
@@ -62,10 +61,10 @@ public class Person extends Contacts {
     }
 
     public void setBirthDate(String birthDate) {
-        this.birthDate = converToDate(birthDate);
+        this.birthDate = convertToDate(birthDate);
     }
 
-    private String converToDate(String birthDate) {
+    private String convertToDate(String birthDate) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
             LocalDate date = LocalDate.parse(birthDate, formatter);

@@ -1,8 +1,9 @@
 package contacts;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Contacts {
+public class Contacts implements Serializable {
     private final static String REGEX_NUMBER = "^\\+?([\\da-zA-Z]{1,}[\\s-]?)?(\\([\\da-zA-Z]{2,}" +
             "(\\)[\\s-]|\\)$))?([\\da-zA-Z]{2,}[\\s-]?)*([\\da-zA-Z]{2,})?$";
     protected String name;
@@ -10,9 +11,7 @@ public class Contacts {
     protected LocalDate timeCreated;
     protected LocalDate timeModified;
     protected boolean isPerson;
-    public Contacts() {
-
-    }
+    public Contacts() {}
 
     public Contacts(String name, String number) {
         this.name = name;
@@ -43,7 +42,6 @@ public class Contacts {
             System.out.println("Wrong number format!");
             this.number = "";
         }
-
     }
 
     public void setTimeModified(){
@@ -61,7 +59,6 @@ public class Contacts {
     public LocalDate getTimeModified() {
         return timeModified;
     }
-
 
     public LocalDate getTimeCreated() {
         return timeCreated;
