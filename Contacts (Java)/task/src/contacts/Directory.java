@@ -11,13 +11,8 @@ public class Directory {
 
     public Directory(ScannerWrapper scanner, String[] args) {
         this.scanner = scanner;
-        if (!(args.length == 0)) {
-            fileName = args[0];
-            contacts = loadContacts(fileName);
-        } else {
-            fileName = null;
-            contacts = new ArrayList<>();
-        }
+        this.fileName = (args.length > 0) ? args[0] : null;
+        this.contacts = (fileName != null) ? loadContacts(fileName) : new ArrayList<>();
     }
 
     private List<Contacts> loadContacts(String fileName) {
@@ -30,6 +25,17 @@ public class Directory {
         }
     }
 
+    private void saveContacts() {
+        if (fileName != null) {
+            try {
+                Serialization.serialize(contacts, fileName);
+                System.out.println("Contacts saved successfully.");
+            } catch (IOException e) {
+                System.err.println("Error saving contacts: " + e.getMessage());
+            }
+        }
+    }
+
     public String addContact() {
         System.out.print("Enter the type (person, organization): ");
         if (scanner.getUserInput().equals("person")) {
@@ -37,6 +43,7 @@ public class Directory {
         } else {
             addCompany();
         }
+        saveContacts();
         return "The record added.";
     }
 
@@ -96,6 +103,7 @@ public class Directory {
                 case "delete" -> contacts.remove(tempContact);
                 case "menu" -> System.out.println();
             }
+            saveContacts();
         } while (!action.equalsIgnoreCase("menu"));
     }
 
