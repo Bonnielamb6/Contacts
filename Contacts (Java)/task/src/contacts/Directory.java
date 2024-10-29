@@ -33,14 +33,14 @@ public class Directory {
     public String addContact() {
         System.out.print("Enter the type (person, organization): ");
         if (scanner.getUserInput().equals("person")) {
-            addPerson();
+            contacts.add(createPerson());
         } else {
             addCompany();
         }
         return "The record added.";
     }
 
-    private void addPerson() {
+    private Person createPerson() {
         Person contactToAdd = new Person();
         System.out.print("Enter the name of the person: ");
         contactToAdd.setName(scanner.getUserInput());
@@ -52,25 +52,19 @@ public class Directory {
         contactToAdd.setGender(scanner.getUserInput());
         System.out.print("Enter the number: ");
         contactToAdd.setNumber(scanner.getUserInput());
-        contactToAdd.setTimeCreated();
-        contactToAdd.setTimeModified();
-        contactToAdd.setPerson(true);
-        contacts.add(contactToAdd);
+        initializeContact(contactToAdd, true);
+        return contactToAdd;
     }
+
+    private void initializeContact(Contacts contact, boolean isPerson) {
+        contact.setPerson(isPerson);
+        contact.setTimeCreated();
+        contact.setTimeModified();
+    }
+
 
     public String countContacts() {
         return "The Phone Book has " + contacts.size() + " records.";
-    }
-
-    public String removeContact() {
-        if (contacts.isEmpty()) {
-            return "No records to remove!";
-        }
-        listContacts();
-        System.out.println("Select a record: ");
-        int tempContact = Integer.parseInt(scanner.getUserInput());
-        contacts.remove(tempContact - 1);
-        return "The record removed!";
     }
 
     public void listContacts() {
@@ -97,95 +91,35 @@ public class Directory {
         do {
             System.out.print("[record] Enter action (edit, delete, menu): ");
             action = scanner.getUserInput();
-            switch (action) {
-                case "edit":
-                    if (tempContact.isPerson()) {
-                        editPerson(tempContact);
-                    } else {
-                        editCompany(tempContact);
-                    }
-                    break;
-                case "delete":
-                    contacts.remove(tempContact);
-                    break;
-                case "menu":
-                    System.out.println();
+            switch (action.toLowerCase()) {
+                case "edit" -> editContact(tempContact);
+                case "delete" -> contacts.remove(tempContact);
+                case "menu" -> System.out.println();
             }
-        } while (!action.equals("menu"));
+        } while (!action.equalsIgnoreCase("menu"));
     }
 
-    public String contactsInfo() {
-        listContacts();
-        System.out.println("Enter index to show info: ");
-        int index = Integer.parseInt(scanner.getUserInput());
-        return contacts.get(index - 1).toString();
-    }
-
-    public String edit() {
-        if (contacts.isEmpty()) {
-            return "No records to edit!";
-        }
-        listContacts();
-        System.out.print("Select a record: ");
-        int tempContact = Integer.parseInt(scanner.getUserInput());
-        if (contacts.get(tempContact - 1).isPerson()) {
-            editPerson(contacts.get(tempContact - 1));
+    private void editContact(Contacts contact) {
+        if (contact.isPerson()) {
+            editField(contact, PersonField.values());
         } else {
-            editCompany(contacts.get(tempContact - 1));
+            editField(contact, CompanyField.values());
         }
-        return "The record updated!";
+        contact.setTimeModified();
+        System.out.println("Saved\n" + contact);
     }
 
-    private void editPerson(Contacts tempContact) {
-        System.out.println("Select a field (name, surname, birth, gender, number): ");
-        String fieldChosen = scanner.getUserInput();
-        switch (fieldChosen) {
-            case "name":
-                System.out.println("Enter name: ");
-                tempContact.setName(scanner.getUserInput());
+    private void editField(Contacts contact, FieldOption[] fields) {
+        System.out.println("Select a field: " + FieldOption.getOptions(fields));
+        String fieldChosen = scanner.getUserInput().toLowerCase();
+        for (FieldOption field : fields) {
+            if (fieldChosen.equals(field.getName())) {
+                System.out.println("Enter " + field.getName() + ": ");
+                String newValue = scanner.getUserInput();
+                field.update(contact, newValue);
                 break;
-            case "surname":
-                System.out.println("Enter surname: ");
-                ((Person) tempContact).setSurname(scanner.getUserInput());
-                break;
-            case "number":
-                System.out.println("Enter number: ");
-                tempContact.setNumber(scanner.getUserInput());
-                break;
-            case "birth":
-                System.out.println("Enter birth: ");
-                ((Person) tempContact).setBirthDate(scanner.getUserInput());
-                break;
-            case "gender":
-                System.out.println("Enter gender: ");
-                ((Person) tempContact).setGender(scanner.getUserInput());
-                break;
+            }
         }
-        System.out.println("Saved");
-        tempContact.setTimeModified();
-        System.out.println(tempContact);
-    }
-
-    private void editCompany(Contacts tempContact) {
-        System.out.println("Select a field (name, address, number): ");
-        String fieldChosen = scanner.getUserInput();
-        switch (fieldChosen) {
-            case "name":
-                System.out.println("Enter name: ");
-                tempContact.setName(scanner.getUserInput());
-                break;
-            case "address":
-                System.out.println("Enter address: ");
-                ((Company) tempContact).setAddress(scanner.getUserInput());
-                break;
-            case "number":
-                System.out.println("Enter number: ");
-                tempContact.setNumber(scanner.getUserInput());
-                break;
-        }
-        System.out.println("Saved");
-        tempContact.setTimeModified();
-        System.out.println(tempContact);
     }
 
     private void addCompany() {
@@ -196,41 +130,120 @@ public class Directory {
         contactToAdd.setAddress(scanner.getUserInput());
         System.out.println("Enter the number:");
         contactToAdd.setNumber(scanner.getUserInput());
-        contactToAdd.setPerson(false);
-        contactToAdd.setTimeCreated();
-        contactToAdd.setTimeModified();
+        initializeContact(contactToAdd, false);
         contacts.add(contactToAdd);
     }
 
     public void search() {
         System.out.println("Enter search query: ");
         String searchQuery = scanner.getUserInput();
-        int numberOfMatches = 0;
-        List<Contacts> matchesList = new ArrayList<>();
-        for (Contacts tempContact : contacts) {
-            if (tempContact.toString().toLowerCase().contains(searchQuery.toLowerCase())) {
-                numberOfMatches++;
-                if (tempContact.isPerson()) {
-                    System.out.println(numberOfMatches + ". " + tempContact.getName() + " " + ((Person) tempContact).getSurname());
-                } else {
-                    System.out.println(numberOfMatches + ". " + tempContact.getName());
-                }
+        List<Contacts> matches = findMatches(searchQuery);
+        handleSearchAction(matches);
+    }
 
-                matchesList.add(tempContact);
+    private List<Contacts> findMatches(String query) {
+        List<Contacts> matches = new ArrayList<>();
+        for (Contacts contact : contacts) {
+            if (contact.toString().toLowerCase().contains(query)) {
+                matches.add(contact);
+                if (contact.isPerson) {
+                    System.out.println(matches.size() + ". " + contact.getName() + " " + ((Person) contact).getSurname());
+                } else {
+                    System.out.println(matches.size() + ". " + contact.getName());
+                }
             }
         }
-        System.out.println("[search] Enter action ([number], back, again): ");
+        return matches;
+    }
+
+    private void handleSearchAction(List<Contacts> matches) {
+        System.out.print("[search] Enter action ([number], back, again): ");
         String action = scanner.getUserInput();
         try {
-            int tempContact = Integer.parseInt(action);
-            menuContact(matchesList.get(tempContact - 1));
-        } catch (Exception e) {
-            switch (action) {
-                case "back":
-                    break;
-                case "again":
-                    search();
+            int index = Integer.parseInt(action) - 1;
+            menuContact(matches.get(index));
+        } catch (NumberFormatException e) {
+            if (action.equalsIgnoreCase("again")) search();
+        }
+    }
+
+    private interface FieldOption {
+        String getName();
+
+        void update(Contacts contact, String newValue);
+
+        static String getOptions(FieldOption[] options) {
+            StringBuilder builder = new StringBuilder();
+            for (FieldOption option : options) {
+                builder.append(option.getName()).append(", ");
             }
+            return builder.substring(0, builder.length() - 2);
+        }
+    }
+
+    private enum PersonField implements FieldOption {
+        NAME("name") {
+            public void update(Contacts contact, String newValue) {
+                contact.setName(newValue);
+            }
+        },
+        SURNAME("surname") {
+            public void update(Contacts contact, String newValue) {
+                ((Person) contact).setSurname(newValue);
+            }
+        },
+        BIRTH("birth") {
+            public void update(Contacts contact, String newValue) {
+                ((Person) contact).setBirthDate(newValue);
+            }
+        },
+        GENDER("gender") {
+            public void update(Contacts contact, String newValue) {
+                ((Person) contact).setGender(newValue);
+            }
+        },
+        NUMBER("number") {
+            public void update(Contacts contact, String newValue) {
+                contact.setNumber(newValue);
+            }
+        };
+
+        private final String name;
+
+        PersonField(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    private enum CompanyField implements FieldOption {
+        NAME("name") {
+            public void update(Contacts contact, String newValue) {
+                contact.setName(newValue);
+            }
+        },
+        ADDRESS("address") {
+            public void update(Contacts contact, String newValue) {
+                ((Company) contact).setAddress(newValue);
+            }
+        },
+        NUMBER("number") {
+            public void update(Contacts contact, String newValue) {
+                contact.setNumber(newValue);
+            }
+        };
+
+        private final String name;
+
+        CompanyField(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 
