@@ -75,8 +75,8 @@ public class Directory {
     }
 
     public void listContacts() {
-        for (int i = 0; i < contacts.size(); i++) {
-            System.out.println(i + 1 + ". " + contacts.get(i).getName());
+        for (int currentContact = 0; currentContact < contacts.size(); currentContact++) {
+            System.out.println(currentContact + 1 + ". " + contacts.get(currentContact).getName());
         }
         System.out.println();
         System.out.print("[list] Enter action ([number], back): ");
