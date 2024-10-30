@@ -1,19 +1,17 @@
 package contacts;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Contacts implements Serializable {
+public abstract class Contact {
     private final static String REGEX_NUMBER = "^\\+?([\\da-zA-Z]{1,}[\\s-]?)?(\\([\\da-zA-Z]{2,}" +
             "(\\)[\\s-]|\\)$))?([\\da-zA-Z]{2,}[\\s-]?)*([\\da-zA-Z]{2,})?$";
     protected String name;
     protected String number;
     protected LocalDate timeCreated;
     protected LocalDate timeModified;
-    protected boolean isPerson;
-    public Contacts() {}
+    public Contact() {}
 
-    public Contacts(String name, String number) {
+    public Contact(String name, String number) {
         this.name = name;
         this.number = number;
         timeCreated = LocalDate.now();
@@ -48,14 +46,6 @@ public class Contacts implements Serializable {
         this.timeModified = LocalDate.now();
     }
 
-    public boolean isPerson() {
-        return isPerson;
-    }
-
-    public void setPerson(boolean person) {
-        isPerson = person;
-    }
-
     public LocalDate getTimeModified() {
         return timeModified;
     }
@@ -67,4 +57,8 @@ public class Contacts implements Serializable {
     public void setTimeCreated() {
         this.timeCreated = LocalDate.now();
     }
+    public abstract String[] getFields();
+
+    public abstract void setFieldByName(String field, String newValue);
+
 }

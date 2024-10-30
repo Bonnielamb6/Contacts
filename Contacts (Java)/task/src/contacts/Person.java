@@ -1,17 +1,47 @@
 package contacts;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import util.DateFormat;
 
-public class Person extends Contacts implements Serializable {
+import java.util.Arrays;
+
+public class Person extends Contact {
     private String surname;
     private String gender;
     private String birthDate;
 
     public Person() {
         super();
+    }
+
+    @Override
+    public String[] getFields() {
+        return Arrays.stream(editableFields.values()).map(Enum::toString).toArray(String[]::new);
+    }
+
+    @Override
+    public String getName(){
+        return name + " " + surname;
+    }
+
+    @Override
+    public void setFieldByName(String field, String newValue) {
+        switch (field) {
+            case "name":
+                setName(newValue);
+                break;
+            case "surname":
+                setSurname(newValue);
+                break;
+            case "gender":
+                setGender(newValue);
+                break;
+            case "birthDate":
+                setBirthDate(newValue);
+                break;
+            case "number":
+                setNumber(newValue);
+                break;
+        }
     }
 
     public Person(String name, String surname, String number, String gender, String birthDate) {
@@ -61,18 +91,7 @@ public class Person extends Contacts implements Serializable {
     }
 
     public void setBirthDate(String birthDate) {
-        this.birthDate = convertToDate(birthDate);
-    }
-
-    private String convertToDate(String birthDate) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-            LocalDate date = LocalDate.parse(birthDate, formatter);
-            return date.toString();
-        } catch (DateTimeParseException e) {
-            System.out.println("Bad birth date!");
-        }
-        return "[no data]";
+        this.birthDate = DateFormat.convertToDate(birthDate);
     }
 
     @Override
@@ -85,4 +104,9 @@ public class Person extends Contacts implements Serializable {
                 "Time created: " + timeCreated + '\n' +
                 "Time last edit: " + timeModified + '\n';
     }
+
+    private enum editableFields {
+        name, surname, birthDate, gender, number
+    }
+
 }

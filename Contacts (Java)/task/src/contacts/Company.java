@@ -1,12 +1,31 @@
 package contacts;
 
-import java.io.Serializable;
+import java.util.Arrays;
 
-public class Company extends Contacts implements Serializable {
+public class Company extends Contact {
     private String address;
 
     public Company() {
         super();
+    }
+
+    @Override
+    public String[] getFields() {
+        return Arrays.stream(editableFields.values()).map(Enum::toString).toArray(String[]::new);
+    }
+
+    @Override
+    public void setFieldByName(String field, String newValue) {
+        switch (field) {
+            case "address":
+                address = newValue;
+                break;
+            case "name":
+                setName(newValue);
+                break;
+            case "number":
+                number = newValue;
+        }
     }
 
     public Company(String address) {
@@ -34,4 +53,9 @@ public class Company extends Contacts implements Serializable {
                 "Time created: " + timeCreated + '\n' +
                 "Time last edit: " + timeModified + '\n';
     }
+
+    private enum editableFields {
+        name, address, number
+    }
+
 }
