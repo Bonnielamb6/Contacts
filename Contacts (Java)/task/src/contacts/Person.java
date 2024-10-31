@@ -1,10 +1,11 @@
 package contacts;
 
-import util.DateFormat;
+import util.ContactsUtil;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Person extends Contact {
+public class Person extends Contact implements Serializable {
     private String surname;
     private String gender;
     private String birthDate;
@@ -15,11 +16,11 @@ public class Person extends Contact {
 
     @Override
     public String[] getFields() {
-        return Arrays.stream(editableFields.values()).map(Enum::toString).toArray(String[]::new);
+        return Arrays.stream(editableFields.values()).map(Enum::name).toArray(String[]::new);
     }
 
     @Override
-    public String getName(){
+    public String getName() {
         return name + " " + surname;
     }
 
@@ -70,20 +71,7 @@ public class Person extends Contact {
     }
 
     public void setGender(String gender) {
-        if (!gender.isBlank() && isGenderCorrect(gender)) {
-            this.gender = (gender);
-        } else {
-            System.out.println("Bad gender!");
-            this.gender = "[no data]";
-        }
-    }
-
-    private boolean isGenderCorrect(String gender) {
-        char firstGenderLetter = gender.charAt(0);
-        return switch (firstGenderLetter) {
-            case 'M', 'F' -> true;
-            default -> false;
-        };
+        this.gender = gender;
     }
 
     public String getBirthDate() {
@@ -91,7 +79,7 @@ public class Person extends Contact {
     }
 
     public void setBirthDate(String birthDate) {
-        this.birthDate = DateFormat.convertToDate(birthDate);
+        this.birthDate = ContactsUtil.convertToDate(birthDate);
     }
 
     @Override

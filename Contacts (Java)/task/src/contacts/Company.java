@@ -1,8 +1,9 @@
 package contacts;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class Company extends Contact {
+public class Company extends Contact implements Serializable {
     private String address;
 
     public Company() {
@@ -11,7 +12,7 @@ public class Company extends Contact {
 
     @Override
     public String[] getFields() {
-        return Arrays.stream(editableFields.values()).map(Enum::toString).toArray(String[]::new);
+        return Arrays.stream(editableFields.values()).map(Enum::name).toArray(String[]::new);
     }
 
     @Override

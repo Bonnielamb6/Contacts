@@ -1,5 +1,7 @@
 package contacts;
 
+import util.ContactsUtil;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,20 +14,6 @@ public class Menu {
         this.scanner = scanner;
         this.contactManager = directory;
     }
-
-    /**
-     * - Rename ContactManager and Serializer class they could by missunderstood as POJOs.              DONE
-     * - Contacts  class can be renamed to Contact                                                      DONE
-     * - Check if I/O streams should be closed in Serializer class                                      DONE
-     * - ContactManager.countContacts  can only return the number of contacts and you can format the    DONE
-     * message as you prefer in the presentation layer                                                  DONE
-     * - Sanitize user input in function ContactManager.listContacts::85 you are casting a String to    DONE
-     * int without checking if it is even a number.                                                     DONE
-     * - Decouple User input from ContactManager class.                                                 DONE
-     * - Integrate Serializable interface already used.                                                 DONE
-     * - Move Person.convertToDate function to Util class                                               DONE
-     * - Remove Fieldoption interface (and its inheritors classes) to simplify                          DONE
-     */
 
     public void showMenu() {
         String option;
@@ -61,9 +49,10 @@ public class Menu {
             int tempContact = Integer.parseInt(action);
             System.out.println(contactManager.getContact(tempContact - 1));
             menuContact(contactManager.getContact(tempContact - 1));
-        }
-        if (!action.equals("back")) {
-            listContacts();
+        } else {
+            if (!action.equals("back")) {
+                listContacts();
+            }
         }
     }
 
@@ -99,7 +88,7 @@ public class Menu {
         System.out.print("Enter the birth date: ");
         contactToAdd.setBirthDate(scanner.getUserInput());
         System.out.print("Enter the gender: ");
-        contactToAdd.setGender(scanner.getUserInput());
+        contactToAdd.setGender(ContactsUtil.isGenderCorrect(scanner.getUserInput()));
         System.out.print("Enter the number: ");
         contactToAdd.setNumber(scanner.getUserInput());
         initializeContact(contactToAdd);
