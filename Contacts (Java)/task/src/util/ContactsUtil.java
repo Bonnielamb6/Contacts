@@ -7,7 +7,7 @@ import java.time.format.DateTimeParseException;
 public class ContactsUtil {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
-    public static String convertToDate(String birthDate) {
+    public static String checkDateFormat(String birthDate) {
         try {
             LocalDate date = LocalDate.parse(birthDate, formatter);
             return date.toString();

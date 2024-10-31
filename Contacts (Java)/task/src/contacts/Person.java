@@ -2,10 +2,9 @@ package contacts;
 
 import util.ContactsUtil;
 
-import java.io.Serializable;
-import java.util.Arrays;
+import java.util.EnumSet;
 
-public class Person extends Contact implements Serializable {
+public class Person extends Contact {
     private String surname;
     private String gender;
     private String birthDate;
@@ -15,8 +14,8 @@ public class Person extends Contact implements Serializable {
     }
 
     @Override
-    public String[] getFields() {
-        return Arrays.stream(editableFields.values()).map(Enum::name).toArray(String[]::new);
+    public EnumSet<editableFields> getFields() {
+        return EnumSet.allOf(editableFields.class);
     }
 
     @Override
@@ -26,20 +25,21 @@ public class Person extends Contact implements Serializable {
 
     @Override
     public void setFieldByName(String field, String newValue) {
-        switch (field) {
-            case "name":
+        editableFields editableField = editableFields.valueOf(field);
+        switch (editableField) {
+            case editableFields.name:
                 setName(newValue);
                 break;
-            case "surname":
+            case editableFields.surname:
                 setSurname(newValue);
                 break;
-            case "gender":
+            case editableFields.gender:
                 setGender(newValue);
                 break;
-            case "birthDate":
+            case editableFields.birthDate:
                 setBirthDate(newValue);
                 break;
-            case "number":
+            case editableFields.number:
                 setNumber(newValue);
                 break;
         }
@@ -79,7 +79,7 @@ public class Person extends Contact implements Serializable {
     }
 
     public void setBirthDate(String birthDate) {
-        this.birthDate = ContactsUtil.convertToDate(birthDate);
+        this.birthDate = ContactsUtil.checkDateFormat(birthDate);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Person extends Contact implements Serializable {
                 "Time last edit: " + timeModified + '\n';
     }
 
-    private enum editableFields {
+    public enum editableFields {
         name, surname, birthDate, gender, number
     }
 

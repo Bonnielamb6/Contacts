@@ -3,11 +3,12 @@ package contacts;
 import util.Serializer;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ContactManager {
-    private final ArrayList<Contact> contacts;
+    private final List<Contact> contacts;
     private final String fileName;
 
     public ContactManager(String[] args) {
@@ -15,7 +16,7 @@ public class ContactManager {
         this.contacts = (fileName != null) ? loadContacts(fileName) : new ArrayList<>();
     }
 
-    private ArrayList<Contact> loadContacts(String fileName) {
+    private List<Contact> loadContacts(String fileName) {
         try {
             Object obj = Serializer.deserialize(fileName);
             return (ArrayList<Contact>) obj;
@@ -28,7 +29,7 @@ public class ContactManager {
     public void saveContacts() {
         if (fileName != null) {
             try {
-                Serializer.serialize(contacts, fileName);
+                Serializer.serialize((Serializable) contacts, fileName);
                 System.out.println("Contact saved successfully.");
             } catch (IOException e) {
                 System.err.println("Error saving contacts: " + e.getMessage());

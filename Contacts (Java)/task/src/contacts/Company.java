@@ -1,9 +1,8 @@
 package contacts;
 
-import java.io.Serializable;
-import java.util.Arrays;
+import java.util.EnumSet;
 
-public class Company extends Contact implements Serializable {
+public class Company extends Contact {
     private String address;
 
     public Company() {
@@ -11,20 +10,21 @@ public class Company extends Contact implements Serializable {
     }
 
     @Override
-    public String[] getFields() {
-        return Arrays.stream(editableFields.values()).map(Enum::name).toArray(String[]::new);
+    public EnumSet<editableFields> getFields() {
+        return EnumSet.allOf(editableFields.class);
     }
 
     @Override
     public void setFieldByName(String field, String newValue) {
-        switch (field) {
-            case "address":
+        editableFields editableField = editableFields.valueOf(field);
+        switch (editableField) {
+            case editableFields.address:
                 address = newValue;
                 break;
-            case "name":
+            case editableFields.name:
                 setName(newValue);
                 break;
-            case "number":
+            case editableFields.number:
                 number = newValue;
         }
     }
@@ -55,7 +55,7 @@ public class Company extends Contact implements Serializable {
                 "Time last edit: " + timeModified + '\n';
     }
 
-    private enum editableFields {
+    public enum editableFields {
         name, address, number
     }
 

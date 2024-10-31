@@ -2,6 +2,7 @@ package contacts;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.EnumSet;
 
 public abstract class Contact implements Serializable {
     private final static String REGEX_NUMBER = "^\\+?([\\da-zA-Z]{1,}[\\s-]?)?(\\([\\da-zA-Z]{2,}" +
@@ -58,7 +59,7 @@ public abstract class Contact implements Serializable {
     public void setTimeCreated() {
         this.timeCreated = LocalDate.now();
     }
-    public abstract String[] getFields();
+    public abstract EnumSet<?> getFields();
 
     public abstract void setFieldByName(String field, String newValue);
 
