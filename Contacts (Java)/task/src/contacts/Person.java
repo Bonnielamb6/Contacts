@@ -1,17 +1,48 @@
 package contacts;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import util.ContactsUtil;
 
-public class Person extends Contacts implements Serializable {
+import java.util.EnumSet;
+
+public class Person extends Contact {
     private String surname;
     private String gender;
     private String birthDate;
 
     public Person() {
         super();
+    }
+
+    @Override
+    public EnumSet<EditableFields> getFields() {
+        return EnumSet.allOf(EditableFields.class);
+    }
+
+    @Override
+    public String getName() {
+        return name + " " + surname;
+    }
+
+    @Override
+    public void setFieldByName(String field, String newValue) {
+        EditableFields editableField = EditableFields.valueOf(field.toUpperCase());
+        switch (editableField) {
+            case EditableFields.NAME:
+                setName(newValue);
+                break;
+            case EditableFields.SURNAME:
+                setSurname(newValue);
+                break;
+            case EditableFields.GENDER:
+                setGender(newValue);
+                break;
+            case EditableFields.BIRTHDATE:
+                setBirthDate(newValue);
+                break;
+            case EditableFields.NUMBER:
+                setNumber(newValue);
+                break;
+        }
     }
 
     public Person(String name, String surname, String number, String gender, String birthDate) {
@@ -40,20 +71,7 @@ public class Person extends Contacts implements Serializable {
     }
 
     public void setGender(String gender) {
-        if (!gender.isBlank() && isGenderCorrect(gender)) {
-            this.gender = (gender);
-        } else {
-            System.out.println("Bad gender!");
-            this.gender = "[no data]";
-        }
-    }
-
-    private boolean isGenderCorrect(String gender) {
-        char firstGenderLetter = gender.charAt(0);
-        return switch (firstGenderLetter) {
-            case 'M', 'F' -> true;
-            default -> false;
-        };
+        this.gender = gender;
     }
 
     public String getBirthDate() {
@@ -61,18 +79,7 @@ public class Person extends Contacts implements Serializable {
     }
 
     public void setBirthDate(String birthDate) {
-        this.birthDate = convertToDate(birthDate);
-    }
-
-    private String convertToDate(String birthDate) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-            LocalDate date = LocalDate.parse(birthDate, formatter);
-            return date.toString();
-        } catch (DateTimeParseException e) {
-            System.out.println("Bad birth date!");
-        }
-        return "[no data]";
+        this.birthDate = ContactsUtil.checkDateFormat(birthDate);
     }
 
     @Override
@@ -85,4 +92,9 @@ public class Person extends Contacts implements Serializable {
                 "Time created: " + timeCreated + '\n' +
                 "Time last edit: " + timeModified + '\n';
     }
+
+    public enum EditableFields {
+        NAME, SURNAME, BIRTHDATE, GENDER, NUMBER
+    }
+
 }
