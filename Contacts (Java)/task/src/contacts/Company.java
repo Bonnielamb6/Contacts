@@ -10,21 +10,21 @@ public class Company extends Contact {
     }
 
     @Override
-    public EnumSet<editableFields> getFields() {
-        return EnumSet.allOf(editableFields.class);
+    public EnumSet<EditableFields> getFields() {
+        return EnumSet.allOf(EditableFields.class);
     }
 
     @Override
     public void setFieldByName(String field, String newValue) {
-        editableFields editableField = editableFields.valueOf(field);
+        EditableFields editableField = EditableFields.valueOf(field.toUpperCase());
         switch (editableField) {
-            case editableFields.address:
+            case EditableFields.ADDRESS:
                 address = newValue;
                 break;
-            case editableFields.name:
+            case EditableFields.NAME:
                 setName(newValue);
                 break;
-            case editableFields.number:
+            case EditableFields.NUMBER:
                 number = newValue;
         }
     }
@@ -55,8 +55,8 @@ public class Company extends Contact {
                 "Time last edit: " + timeModified + '\n';
     }
 
-    public enum editableFields {
-        name, address, number
+    public enum EditableFields {
+        NAME, ADDRESS, NUMBER
     }
 
 }

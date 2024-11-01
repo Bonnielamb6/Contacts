@@ -121,11 +121,11 @@ public class Menu {
     }
 
     private void editField(Contact contact) {
-        System.out.println("Select a field: " + Arrays.toString(contact.getFields().toArray()));
+        System.out.println("Select a field: " + Arrays.toString(contact.getFields().toArray()).toLowerCase());
         String fieldChosen = scanner.getUserInput().toLowerCase();
         String[] fields = contact.getFields().stream().map(Enum::name).toArray(String[]::new);
         for (String field : fields) {
-            if (fieldChosen.equals(field)) {
+            if (fieldChosen.equals(field.toLowerCase())) {
                 System.out.println("Enter " + field + ": ");
                 String newValue = scanner.getUserInput();
                 contact.setFieldByName(field, newValue);

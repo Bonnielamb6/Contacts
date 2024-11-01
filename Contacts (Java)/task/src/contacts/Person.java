@@ -14,8 +14,8 @@ public class Person extends Contact {
     }
 
     @Override
-    public EnumSet<editableFields> getFields() {
-        return EnumSet.allOf(editableFields.class);
+    public EnumSet<EditableFields> getFields() {
+        return EnumSet.allOf(EditableFields.class);
     }
 
     @Override
@@ -25,21 +25,21 @@ public class Person extends Contact {
 
     @Override
     public void setFieldByName(String field, String newValue) {
-        editableFields editableField = editableFields.valueOf(field);
+        EditableFields editableField = EditableFields.valueOf(field.toUpperCase());
         switch (editableField) {
-            case editableFields.name:
+            case EditableFields.NAME:
                 setName(newValue);
                 break;
-            case editableFields.surname:
+            case EditableFields.SURNAME:
                 setSurname(newValue);
                 break;
-            case editableFields.gender:
+            case EditableFields.GENDER:
                 setGender(newValue);
                 break;
-            case editableFields.birthDate:
+            case EditableFields.BIRTHDATE:
                 setBirthDate(newValue);
                 break;
-            case editableFields.number:
+            case EditableFields.NUMBER:
                 setNumber(newValue);
                 break;
         }
@@ -93,8 +93,8 @@ public class Person extends Contact {
                 "Time last edit: " + timeModified + '\n';
     }
 
-    public enum editableFields {
-        name, surname, birthDate, gender, number
+    public enum EditableFields {
+        NAME, SURNAME, BIRTHDATE, GENDER, NUMBER
     }
 
 }
