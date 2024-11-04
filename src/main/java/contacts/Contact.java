@@ -13,13 +13,6 @@ public abstract class Contact implements Serializable {
     protected LocalDate timeModified;
     public Contact() {}
 
-    public Contact(String name, String number) {
-        this.name = name;
-        this.number = number;
-        timeCreated = LocalDate.now();
-        timeModified = LocalDate.now();
-    }
-
     public String getName() {
         return name;
     }
