@@ -7,13 +7,14 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import util.Serializer;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
 class ContactManagerTest {
@@ -24,6 +25,7 @@ class ContactManagerTest {
     Company company1;
     Company company2;
     Company company3;
+    String fileName;
 
     ContactManagerTest() {
         managerToTest = new ContactManager(new String[]{});
@@ -37,6 +39,7 @@ class ContactManagerTest {
         company1.setName("Pizza jones");
         company2.setName("manu pizza");
         company3.setName("mons pitza");
+        fileName = "contacts.txt";
     }
 
     @Test
@@ -107,18 +110,25 @@ class ContactManagerTest {
     @Test
     void loadContactsShouldNotThrowException() throws IOException, ClassNotFoundException {
         List<Contact> expectedList = new ArrayList<>();
-        String[] args = {"contactsTest.txt"};
+        String[] args = {fileName};
         try (MockedStatic<Serializer> mocked = Mockito.mockStatic(Serializer.class)) {
-            when(Serializer.deserialize("contactsTest.txt")).thenReturn(expectedList);
+            when(Serializer.deserialize(fileName)).thenReturn(expectedList);
             managerToTest = new ContactManager(args);
-            mocked.verify(() -> Serializer.deserialize("contactsTest.txt"));
+            mocked.verify(() -> Serializer.deserialize(fileName));
         }
+        File file = new File(fileName);
+        file.delete();
+        assertFalse(file.exists());
     }
 
     @Test
     void saveContactsShouldNotThrowException() {
-        managerToTest = new ContactManager(new String[]{"contactsTest.txt"});
+        managerToTest = new ContactManager(new String[]{fileName});
         assertDoesNotThrow(() -> managerToTest.saveContacts());
+        File file = new File(fileName);
+        assertTrue(file.exists());
+        file.delete();
+        assertFalse(file.exists());
     }
 
 }
