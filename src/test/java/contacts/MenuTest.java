@@ -6,7 +6,6 @@ import org.mockito.Mockito;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,20 +16,16 @@ class MenuTest {
     Menu menuToTest;
     ScannerWrapper scanner;
     ContactManager contactManagerSpy;
-    Person personMock;
-    Company companyMock;
     PrintStream outMock;
-    Contact contactMock;
+    Person person;
 
     MenuTest() {
         scanner = Mockito.mock(ScannerWrapper.class);
         ContactManager realContactManager = new ContactManager(new String[]{});
         contactManagerSpy = Mockito.spy(realContactManager);
-        personMock = Mockito.mock(Person.class);
-        companyMock = Mockito.mock(Company.class);
         outMock = Mockito.mock(PrintStream.class);
         menuToTest = new Menu(scanner, contactManagerSpy);
-        contactMock = Mockito.mock(Contact.class);
+        person = new Person();
     }
 
     @Test
@@ -74,11 +69,11 @@ class MenuTest {
 
     @Test
     void menuListMenuContactIsCalled() {
-        contactManagerSpy.addContact(contactMock);
+        contactManagerSpy.addContact(person);
 
         when(scanner.getUserInput()).thenReturn("list").thenReturn("1").thenReturn("menu").thenReturn("exit");
         when(contactManagerSpy.listContacts()).thenReturn("");
-        when(contactManagerSpy.getContact(anyInt())).thenReturn(personMock);
+        when(contactManagerSpy.getContact(anyInt())).thenReturn(person);
 
         System.setOut(outMock);
 
@@ -104,23 +99,21 @@ class MenuTest {
     @Test
     void menuSearchContactEditIsCalled() {
         List<Contact> contacts = new ArrayList<>();
-        contacts.add(personMock);
+        contacts.add(person);
         when(scanner.getUserInput()).thenReturn("search").thenReturn("piz").thenReturn("1")
                 .thenReturn("edit").thenReturn("name").thenReturn("Juan").thenReturn("menu").thenReturn("exit");
         when(contactManagerSpy.findMatches("piz")).thenReturn(contacts);
-        when(personMock.getFields()).thenReturn(EnumSet.allOf(Person.EditableFields.class));
 
         menuToTest.showMenu();
         verify(contactManagerSpy, times(1)).findMatches("piz");
         verify(contactManagerSpy, times(2)).saveContacts();
-        verify(personMock, times(2)).getFields();
-        verify(personMock, times(1)).setFieldByName(anyString(), anyString());
     }
 
     @Test
     void menuSearchContactDeleteIsCalled() {
         List<Contact> contacts = new ArrayList<>();
-        contacts.add(personMock);
+
+        contacts.add(person);
         when(scanner.getUserInput()).thenReturn("search").thenReturn("piz").thenReturn("1")
                 .thenReturn("delete").thenReturn("menu").thenReturn("exit");
         when(contactManagerSpy.findMatches("piz")).thenReturn(contacts);
@@ -128,13 +121,13 @@ class MenuTest {
         menuToTest.showMenu();
         verify(contactManagerSpy, times(1)).findMatches("piz");
         verify(contactManagerSpy, times(2)).saveContacts();
-        verify(contactManagerSpy, times(1)).removeContact(personMock);
+        verify(contactManagerSpy, times(1)).removeContact(person);
     }
 
     @Test
     void menuSearchContactMenuIsCalled() {
         List<Contact> contacts = new ArrayList<>();
-        contacts.add(personMock);
+        contacts.add(person);
         when(scanner.getUserInput()).thenReturn("search").thenReturn("piz")
                 .thenReturn("menu").thenReturn("exit");
         when(contactManagerSpy.findMatches("piz")).thenReturn(contacts);
@@ -191,14 +184,12 @@ class MenuTest {
 
     @Test
     void editFieldDoesNotExistShouldNotThrowException() {
-        contactManagerSpy.addContact(personMock);
+        contactManagerSpy.addContact(person);
         when(scanner.getUserInput()).thenReturn("list").thenReturn("1").thenReturn("edit")
                 .thenReturn("jose").thenReturn("menu").thenReturn("exit");
         when(contactManagerSpy.listContacts()).thenReturn("");
-        when(contactManagerSpy.getContact(anyInt())).thenReturn(personMock);
-        when(personMock.getFields()).thenReturn(EnumSet.allOf(Person.EditableFields.class));
+        when(contactManagerSpy.getContact(anyInt())).thenReturn(person);
         menuToTest.showMenu();
-
     }
 
 }

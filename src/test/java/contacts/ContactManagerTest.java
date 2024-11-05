@@ -19,17 +19,24 @@ import static org.mockito.Mockito.*;
 class ContactManagerTest {
 
     ContactManager managerToTest;
-    Person personMock;
-    Person personMock2;
-    Person personMock3;
     PrintStream outMock;
+    Person person;
+    Company company1;
+    Company company2;
+    Company company3;
 
     ContactManagerTest() {
         managerToTest = new ContactManager(new String[]{});
-        personMock = Mockito.mock(Person.class);
-        personMock2 = Mockito.mock(Person.class);
-        personMock3 = Mockito.mock(Person.class);
         outMock = Mockito.mock(PrintStream.class);
+        person = new Person();
+        company1 = new Company();
+        company2 = new Company();
+        company3 = new Company();
+        person.setName("John");
+        person.setSurname("Doe");
+        company1.setName("Pizza jones");
+        company2.setName("manu pizza");
+        company3.setName("mons pitza");
     }
 
     @Test
@@ -38,21 +45,16 @@ class ContactManagerTest {
         String expectedString1 = "1. Pizza jones";
         String expectedString2 = "2. manu pizza";
         List<Contact> expectedList = new ArrayList<>();
-        expectedList.add(personMock);
-        expectedList.add(personMock2);
 
-        when(personMock.toString()).thenReturn("Pizza jones");
-        when(personMock2.toString()).thenReturn("manu pizza");
-        when(personMock3.toString()).thenReturn("mons pitza");
-        when(personMock.getName()).thenReturn("Pizza jones");
-        when(personMock2.getName()).thenReturn("manu pizza");
+        expectedList.add(company1);
+        expectedList.add(company2);
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         System.setOut(outMock);
 
-        managerToTest.addContact(personMock);
-        managerToTest.addContact(personMock2);
-        managerToTest.addContact(personMock3);
+        managerToTest.addContact(company1);
+        managerToTest.addContact(company2);
+        managerToTest.addContact(company3);
 
         assertEquals(expectedList, managerToTest.findMatches(query));
 
@@ -68,7 +70,7 @@ class ContactManagerTest {
         int before = 0;
         int after = 1;
         assertEquals(before, managerToTest.countContacts());
-        managerToTest.addContact(personMock);
+        managerToTest.addContact(person);
         assertEquals(after, managerToTest.countContacts());
     }
 
@@ -77,8 +79,8 @@ class ContactManagerTest {
         int before = 0;
         int after = 2;
         assertEquals(before, managerToTest.countContacts());
-        managerToTest.addContact(personMock);
-        managerToTest.addContact(personMock);
+        managerToTest.addContact(person);
+        managerToTest.addContact(person);
         assertEquals(after, managerToTest.countContacts());
     }
 
@@ -87,8 +89,7 @@ class ContactManagerTest {
         int before = 0;
         String expected = "1. John Doe\n";
         assertEquals(before, managerToTest.countContacts());
-        managerToTest.addContact(personMock);
-        when(personMock.getName()).thenReturn("John Doe");
+        managerToTest.addContact(person);
         assertEquals(expected, managerToTest.listContacts());
     }
 
@@ -97,9 +98,9 @@ class ContactManagerTest {
         int before = 0;
         int after = 1;
         assertEquals(before, managerToTest.countContacts());
-        managerToTest.addContact(personMock);
+        managerToTest.addContact(person);
         assertEquals(after, managerToTest.countContacts());
-        managerToTest.removeContact(personMock);
+        managerToTest.removeContact(person);
         assertEquals(before, managerToTest.countContacts());
     }
 
