@@ -27,35 +27,22 @@ public class Person extends Contact {
     public void setFieldByName(String field, String newValue) {
         EditableFields editableField = EditableFields.valueOf(field.toUpperCase());
         switch (editableField) {
-            case EditableFields.NAME:
+            case NAME:
                 setName(newValue);
                 break;
-            case EditableFields.SURNAME:
+            case SURNAME:
                 setSurname(newValue);
                 break;
-            case EditableFields.GENDER:
+            case GENDER:
                 setGender(newValue);
                 break;
-            case EditableFields.BIRTHDATE:
+            case BIRTHDATE:
                 setBirthDate(newValue);
                 break;
-            case EditableFields.NUMBER:
+            case NUMBER:
                 setNumber(newValue);
                 break;
         }
-    }
-
-    public Person(String name, String surname, String number, String gender, String birthDate) {
-        super(name, number);
-        this.surname = surname;
-        this.gender = gender;
-        this.birthDate = birthDate;
-    }
-
-    public Person(String surname, String gender, String birthDate) {
-        this.surname = surname;
-        this.gender = gender;
-        this.birthDate = birthDate;
     }
 
     public String getSurname() {

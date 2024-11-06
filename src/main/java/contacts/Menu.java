@@ -8,7 +8,7 @@ import java.util.List;
 public class Menu {
     private final ScannerWrapper scanner;
     private final ContactManager contactManager;
-    String REGEX_POSITIVE_INTEGER = "^[1-9][0-9]*$";
+    final String REGEX_POSITIVE_INTEGER = "^[1-9][0-9]*$";
 
     public Menu(ScannerWrapper scanner, ContactManager directory) {
         this.scanner = scanner;
@@ -31,7 +31,7 @@ public class Menu {
                     search();
                     break;
                 case "count":
-                    System.out.println("The Phone Book has " + contactManager.countContacts() + " records." + "\n");
+                    System.out.println("The Phone Book has " + contactManager.countContacts() + " records.\n");
                     break;
                 case "exit":
                     System.out.println();
@@ -134,7 +134,7 @@ public class Menu {
         }
     }
 
-    public void search() {
+    private void search() {
         System.out.println("Enter search query: ");
         String searchQuery = scanner.getUserInput();
         List<Contact> matches = contactManager.findMatches(searchQuery);
@@ -144,10 +144,10 @@ public class Menu {
     private void handleSearchAction(List<Contact> matches) {
         System.out.print("[search] Enter action ([number], back, again): ");
         String action = scanner.getUserInput();
-        try {
+        if (action.matches(REGEX_POSITIVE_INTEGER)) {
             int index = Integer.parseInt(action) - 1;
             menuContact(matches.get(index));
-        } catch (NumberFormatException e) {
+        } else {
             if (action.equalsIgnoreCase("again")) search();
         }
     }

@@ -18,24 +18,15 @@ public class Company extends Contact {
     public void setFieldByName(String field, String newValue) {
         EditableFields editableField = EditableFields.valueOf(field.toUpperCase());
         switch (editableField) {
-            case EditableFields.ADDRESS:
+            case ADDRESS:
                 address = newValue;
                 break;
-            case EditableFields.NAME:
+            case NAME:
                 setName(newValue);
                 break;
-            case EditableFields.NUMBER:
+            case NUMBER:
                 number = newValue;
         }
-    }
-
-    public Company(String address) {
-        this.address = address;
-    }
-
-    public Company(String name, String number, String address) {
-        super(name, number);
-        this.address = address;
     }
 
     public String getAddress() {
